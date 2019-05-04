@@ -3,9 +3,7 @@ module.exports = {
   output: {
     dir: 'example/dist'
   },
-  chainWebpack(config) {
-    config.plugin('monaco').use(require('monaco-editor-webpack-plugin'))
-  },
+  chainWebpack(config) {},
   babel: {
     jsx: 'vue'
   }

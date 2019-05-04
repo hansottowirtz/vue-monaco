@@ -1,5 +1,5 @@
 {
-  "name": "vue-monaco",
+  "name": "@bubblydoo/vue-monaco",
   "version": "0.3.1",
   "description": "MonacoEditor component for Vue.js",
   "repository": {
@@ -15,20 +15,18 @@
     "test": "npm run lint && echo 'no tests!'",
     "lint": "xo",
     "prepublishOnly": "npm run build",
-    "build": "bili --js buble --format umd,es --module-name VueMonaco --globals.monaco-editor monaco",
+    "build": "bili --js buble --format umd,es --module-name VueMonaco",
     "example": "poi --serve",
     "build:example": "poi --prod"
   },
   "author": "egoist <0x142857@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "monaco-editor": "^0.15.6",
     "nano-assign": "^1.0.0"
   },
   "devDependencies": {
     "bili": "^3.1.2",
     "eslint-config-rem": "^3.0.0",
-    "monaco-editor-webpack-plugin": "^1.7.0",
     "poi": "^12.2.14",
     "vue": "^2.5.21",
     "vue-template-compiler": "^2.5.21",
