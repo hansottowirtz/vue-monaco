@@ -2,9 +2,15 @@
 
 [![NPM version](https://img.shields.io/npm/v/vue-monaco.svg?style=flat)](https://npmjs.com/package/vue-monaco) [![NPM downloads](https://img.shields.io/npm/dm/vue-monaco.svg?style=flat)](https://npmjs.com/package/vue-monaco) [![CircleCI](https://circleci.com/gh/egoist/vue-monaco/tree/master.svg?style=shield)](https://circleci.com/gh/egoist/vue-monaco/tree/master) [![donate](https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&style=flat)](https://github.com/egoist/donate)
 
-_[Monaco Editor](https://github.com/Microsoft/monaco-editor) is the code editor that powers VS Code._
+[Monaco Editor](https://github.com/Microsoft/monaco-editor) is the code editor that powers VS Code, now it's available as a Vue component `<MonacoEditor>` thanks to this project.
 
 ## Install
+
+```bash
+npm install vue-monaco
+```
+
+Or
 
 ```bash
 yarn add vue-monaco
@@ -28,7 +34,7 @@ module.exports = {
       // Some language extensions like typescript are so huge that may impact build performance
       // e.g. Build full languages support with webpack 4.0 takes over 80 seconds
       // Languages are loaded on demand at runtime
-      languages: ['javascript', 'css', 'html']
+      languages: ['javascript', 'css', 'html', 'typescript']
     })
   ]
 }
@@ -38,8 +44,7 @@ Then use the component:
 
 ```vue
 <template>
-  <monaco-editor class="editor" v-model="code" language="javascript">
-  </monaco-editor>
+  <MonacoEditor class="editor" v-model="code" language="javascript" />
 </template>
 
 <script>
@@ -128,44 +133,87 @@ window.MonacoEnvironment = {
 ### Props
 
 - `options`: The [second argument](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditorconstructionoptions.html) of [`monaco.editor.create`](https://microsoft.github.io/monaco-editor/api/modules/monaco.editor.html#create).
-- `code`: A shortcut to set `options.value`.
+- `value`: A shortcut to set `options.value`.
 - `theme`: A shortcut to set `options.theme`.
 - `language`: A shortcut to set `options.language`.
 - `amdRequire`: Load monaco-editor using given amd-style require function.
+- `diffEditor`: `boolean` Indicate that this is a DiffEditor, `false` by default.
 
-### Events
+### Component Events
 
-| Event              | IStandaloneCodeEditor Event | Parameters                                  |
-| ------------------ | --------------------------- | ------------------------------------------- |
-| `editorDidMount`   |                             | IStandaloneCodeEditor                       |
-| `contextMenu`      | onContextMenu               | IEditorMouseEvent                           |
-| `blur`             | onDidBlurEditorWidget       |                                             |
-| `blurText`         | onDidBlurEditorText         |                                             |
-| `configuration`    | onDidBlurEditorText         | IConfigurationChangedEvent                  |
-| `position`         | onDidChangeCursorPosition   | ICursorPositionChangedEvent                 |
-| `selection`        | onDidChangeCursorSelection  | ICursorSelectionChangedEvent                |
-| `model`            | onDidChangeModel            | IModelChangedEvent                          |
-| `change`           | onDidChangeModelContent     | value: string, e: IModelContentChangedEvent |
-| `modelDecorations` | onDidChangeModelDecorations | IModelDecorationsChangedEvent               |
-| `modelLanguage`    | onDidChangeModelLanguage    | IModelLanguageChangedEvent                  |
-| `modelOptions`     | onDidChangeModelOptions     | IModelOptionsChangedEvent                   |
-| `afterDispose`     | onDidDispose                |                                             |
-| `focus`            | onDidFocusEditorWidget      |                                             |
-| `focusText`        | onDidFocusEditorText        |                                             |
-| `layout`           | onDidLayoutChange           | EditorLayoutInfo                            |
-| `scroll`           | onDidScrollChange           | IScrollEvent                                |
-| `keydown`          | onKeyDown                   | IKeyboardEvent                              |
-| `keyup`            | onKeyUp                     | IKeyboardEvent                              |
-| `mouseDown`        | onMouseDown                 | IEditorMouseEvent                           |
-| `mouseLeave`       | onMouseLeave                | IEditorMouseEvent                           |
-| `mouseMove`        | onMouseMove                 | IEditorMouseEvent                           |
-| `mouseUp`          | onMouseUp                   | IEditorMouseEvent                           |
+#### `editorWillMount`
+
+- Params:
+  - `monaco`: [`monaco module`](https://microsoft.github.io/monaco-editor/api/index.html)
+
+Called before mounting the editor.
+
+#### `editorDidMount`
+
+- Params:
+  - `editor`: [`IStandaloneCodeEditor`](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonecodeeditor.html) for normal editor, [`IStandaloneDiffEditor`](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonediffeditor.html) for diff editor.
+
+Called when the editor is mounted.
+
+#### `change`
+
+Editor value is updated.
+
+- Params:
+  - `value`: New editor value.
+  - `event`: The `event` from [`onDidChangeModelContent`](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonecodeeditor.html#ondidchangemodelcontent).
+
+#### Editor Events
+
+You can listen to the editor events directly like this:
+
+```vue
+<template>
+  <MonacoEditor v-model="code" @editorDidMount="editorDidMount" />
+</template>
+
+<script>
+export default {
+  methods: {
+    editorDidMount(editor) {
+      // Listen to `scroll` event
+      editor.onDidScrollChange(e => {
+        console.log(e)
+      })
+    }
+  },
+
+  data() {
+    return {
+      code: '...'
+    }
+  }
+}
+</script>
+```
+
+Refer to [this page](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonecodeeditor.html) for all editor events.
 
 ### Methods
 
-- `getMonaco(): IStandaloneCodeEditor`: Return the [editor instance](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonecodeeditor.html).
+- `getEditor(): IStandaloneCodeEditor`: Return the [editor instance](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonecodeeditor.html).
 
-Use `ref` to interact with the `MonacoEditor` component in order to access methods: `<MonacoEditor ref="editor"></MonacoEditor>`, then `this.$refs.editor.getMonaco()` will be available.
+Use `ref` to interact with the `MonacoEditor` component in order to access methods: `<MonacoEditor ref="editor" />`, then `this.$refs.editor.getEditor()` will be available.
+
+### Use the DiffEditor
+
+Use `diffEditor` prop to indicate that this is a DiffEditor, use `original` prop to set the content for the original editor, use `value` prop to set the content for the modified editor.
+
+```vue
+<MonacoEditor
+  language="javascript"
+  :diffEditor="true"
+  :value="code"
+  :original="originalCode"
+/>
+```
+
+In this case, the component's `getEditor()` returns the [`IStandaloneDiffEditor`](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonediffeditor.html) instance, while you can use `getModifiedEditor()` to get the modified editor which is an [`IStandaloneCodeEditor`](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandalonecodeeditor.html) instance.
 
 ## Contributing
 

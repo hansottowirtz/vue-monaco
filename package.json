@@ -15,7 +15,7 @@
     "test": "npm run lint && echo 'no tests!'",
     "lint": "xo",
     "prepublishOnly": "npm run build",
-    "build": "bili --js buble --format umd,es --module-name VueMonaco",
+    "build": "bili",
     "example": "poi --serve",
     "build:example": "poi --prod"
   },
@@ -25,15 +25,21 @@
     "nano-assign": "^1.0.0"
   },
   "devDependencies": {
-    "bili": "^3.1.2",
-    "eslint-config-rem": "^3.0.0",
+    "bili": "^4.8.0",
+    "eslint-config-rem": "^4.0.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "monaco-editor-webpack-plugin": "^1.9.0",
     "poi": "^12.2.14",
+    "prettier": "^1.18.2",
     "vue": "^2.5.21",
     "vue-template-compiler": "^2.5.21",
-    "xo": "^0.18.0"
+    "xo": "^0.24.0"
   },
   "xo": {
-    "extends": "rem/prettier",
+    "extends": [
+      "rem",
+      "plugin:prettier/recommended"
+    ],
     "ignores": [
       "example/**"
     ],
