@@ -1,6 +1,6 @@
 {
   "name": "@bubblydoo/vue-monaco",
-  "version": "0.3.2",
+  "version": "1.2.1-next.1",
   "description": "MonacoEditor component for Vue.js",
   "repository": {
     "url": "egoist/vue-monaco",
@@ -28,10 +28,9 @@
     "bili": "^4.8.0",
     "eslint-config-rem": "^4.0.0",
     "eslint-plugin-prettier": "^3.1.0",
-    "monaco-editor-webpack-plugin": "^1.9.0",
     "poi": "^12.2.14",
     "prettier": "^1.18.2",
-    "vue": "^2.5.21",
+    "vue": "^3.0.0-rc.5",
     "vue-template-compiler": "^2.5.21",
     "xo": "^0.24.0"
   },
